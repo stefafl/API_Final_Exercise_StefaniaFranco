@@ -1,6 +1,6 @@
 # Final Exercise API Automaation
 
-This project is developed as a Maven project. It use as an endpoint https://6294d1b0a7203b3ed071df5c.mockapi.io/api/bank_transaction/:endpoint
+This project is developed as a Maven project. It use as an endpoint https://6294d1b0a7203b3ed071df5c.mockapi.io/api/bank_transaction/users
 
 Consist of the following tests:
 
