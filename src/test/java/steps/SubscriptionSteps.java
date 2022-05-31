@@ -9,7 +9,9 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import net.thucydides.core.annotations.Steps;
 import org.junit.Assert;
+import org.testng.Reporter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,10 +34,6 @@ public class SubscriptionSteps {
         subscriptionService.sendGetRequest("https://6294d1b0a7203b3ed071df5c.mockapi.io/api/bank_transaction/users");
     }
 
-    @Given("I get the number of users from the endpoint")
-    public void iGetTheNumberOfUsersFromTheEndpoint() {
-        subscriptionService.sendGetRequest2("https://6294d1b0a7203b3ed071df5c.mockapi.io/api/bank_transaction/users");
-    }
 
     @When("I make sure the endpoint is empty")
     public void iMakeSureEndpointIsEmpty(){
@@ -77,19 +75,35 @@ public class SubscriptionSteps {
         restAssuredThat(response -> response.statusCode(responseCode));
     }
 
-    /*@When("I create a new user using POST request body based on data table")
-    public void iSendAPOSTQueryToCreateANewUserFromDataTable(DataTable dataTable) {
+    @When("I create a set of users using POST request body based on data table")
+    public void iSendAPOSTQueryToCreateANewUsersFromDataTable(DataTable dataTable) {
         User userBody = new User();
         List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
+        List<String> emails = new ArrayList<>();
 
         for (Map<String, String> columns : rows) {
-            userBody.setUser(columns.get("user"));
+            try {
+                Assert.assertFalse(emails.contains(columns.get("email")));
+            }catch (AssertionError e){
+                Reporter.log("Duplicate email: " + columns.get("email"), true);
+                continue;
+            }
+
+            emails.add(columns.get("email"));
+
+            userBody.setName(columns.get("name"));
+            userBody.setLastName(columns.get("lastName"));
+            userBody.setAccountNumber(columns.get("accountNumber"));
+            userBody.setAmmount(Integer.parseInt(columns.get("ammount")));
+            userBody.setTransactionType(columns.get("transactionType"));
             userBody.setEmail(columns.get("email"));
-            userBody.setSubscription(Boolean.parseBoolean(columns.get("subscription")));
+            userBody.setActive(Boolean.parseBoolean(columns.get("active")));
+            userBody.setCountry(columns.get("country"));
+            userBody.setTelephone(columns.get("telephone"));
 
             subscriptionService.sendPostQueryWithBody(userBody);
         }
-    }*/
+    }
 
     @When("I create a new user using POST request body string {string}")
     public void iSendAPOSTQueryToCreateANewUser(String requestBody) {

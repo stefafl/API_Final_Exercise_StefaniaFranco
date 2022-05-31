@@ -120,10 +120,7 @@ public class SubscriptionService {
                 .contentType(CONTENT_TYPE)
                 .header(CONTENT_TYPE, SUBSCRIPTION_CONTENT_TYPE)
                 .body(body)
-                .post(new BaseApi().getEndpointByKey("my_endpoint"));
-
-        LOGGER.info("Send POST Query --- Time: " + response.getTime() + " -- Status code: " + response.getStatusCode() +
-                " -- Session ID: " + response.getSessionId());
+                .post("https://6294d1b0a7203b3ed071df5c.mockapi.io/api/bank_transaction/users");
     }
 
     /**
