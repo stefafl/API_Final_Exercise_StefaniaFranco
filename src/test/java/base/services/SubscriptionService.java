@@ -1,16 +1,12 @@
 package base.services;
 
-import base.BaseApi;
 import base.model.User;
 import io.restassured.response.Response;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,11 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * This Class contains all methods/actions needed by functions related to Subscription Service
  */
 public class SubscriptionService {
-
-    /**
-     * Logger by Log4j2 declaration and initialization
-     */
-    private static final Logger LOGGER = LogManager.getLogger(SubscriptionService.class);
 
     /**
      * Constants definitions
@@ -36,37 +27,6 @@ public class SubscriptionService {
     private Response response;
     private User user;
 
-
-    /**
-     * This method send a GET request bases on an endpoint
-     * Using get function from SerenityREST
-     *
-     * @param endpoint (String)
-     */
-    @Step("I get the endpoint by resource {string}")
-    public void sendRequestByGet(String endpoint) {
-        SerenityRest.get(endpoint);
-    }
-
-    /**
-     * This method is used to send a GET request based on an endpoint
-     *
-     * @param endpoint (String)
-     */
-    @Step("I get the endpoint {string}")
-    public void sendGetRequest2(String endpoint) {
-        response = SerenityRest.given()
-                .contentType(CONTENT_TYPE)
-                .header(CONTENT_TYPE, SUBSCRIPTION_CONTENT_TYPE)
-                .when()
-                .get(endpoint);
-
-        response.prettyPrint();
-
-        LOGGER.info("Send GET request --- Time: " + response.getTime() + " -- Status code: " + response.getStatusCode() +
-                " -- Session ID: " + response.getSessionId());
-    }
-
     /**
      * This method is used to send a GET request based on an endpoint
      *
@@ -79,41 +39,6 @@ public class SubscriptionService {
                 .header(CONTENT_TYPE, SUBSCRIPTION_CONTENT_TYPE)
                 .when()
                 .get(endpoint);
-    }
-
-    /**
-     * This method send a POST query based on a body request
-     *
-     * @param bodyRequest (String map that should contain the body request)
-     */
-    @Step("I send a POST query to {string} with header {string} and body {string}")
-    public void sendPostQuery(String bodyRequest) {
-        response = SerenityRest.given()
-                .contentType(CONTENT_TYPE)
-                .header(CONTENT_TYPE, SUBSCRIPTION_CONTENT_TYPE)
-                .body(bodyRequest)
-                .post(new BaseApi().getEndpointByKey("my_endpoint"));
-
-        LOGGER.info("Send POST request --- Time: " + response.getTime() + " -- Status code: " + response.getStatusCode() +
-                " -- Session ID: " + response.getSessionId());
-    }
-
-    /**
-     * This method send a POST query based on a body from JSON resource
-     *
-     * @param action
-     * @param key
-     */
-    @Step("I send a POST query using resource with key {key}")
-    public void sendPostQueryWithKey(String action, String key) {
-        response = SerenityRest.given()
-                .contentType(CONTENT_TYPE)
-                .header(CONTENT_TYPE, SUBSCRIPTION_CONTENT_TYPE)
-                .body(new BaseApi().createRequestByJsonFile(action, key))
-                .post(new BaseApi().getEndpointByKey("my_endpoint"));
-
-        LOGGER.info("Send POST Query --- Time: " + response.getTime() + " -- Status code: " + response.getStatusCode() +
-                " -- Session ID: " + response.getSessionId());
     }
 
     /**
@@ -148,21 +73,6 @@ public class SubscriptionService {
     }
 
     /**
-     * @param bodyRequest
-     */
-    @Step("I send a DELETE query to {string} with header {string} and body {string}")
-    public void sendDeleteQuery(Map<String, String> bodyRequest) {
-        response = SerenityRest.given()
-                .contentType(CONTENT_TYPE)
-                .header(CONTENT_TYPE, SUBSCRIPTION_CONTENT_TYPE)
-                .body(bodyRequest)
-                .delete(new BaseApi().getEndpointByKey("my_endpoint"));
-
-        LOGGER.info("Send DELETE Query --- Time: " + response.getTime() + " -- Status code: " + response.getStatusCode() +
-                " -- Session ID: " + response.getSessionId());
-    }
-
-    /**
      * This method returns the list of users from the main service with all contained elements
      *
      * @return List of users from class User
@@ -172,16 +82,6 @@ public class SubscriptionService {
         return SerenityRest.lastResponse().jsonPath().getList(".", User.class);
     }
 
-    /**
-     * This method returns the last user created with all content
-     *
-     * @return Last user created as User object
-     */
-    @Step("I Get last user from user list")
-    public User getLastCreatedUser() {
-        List<User> userListResponse = getUserListFromService();
-        return userListResponse.get(userListResponse.size() - 1);
-    }
 
     /**
      * This method updates a user account number using body information

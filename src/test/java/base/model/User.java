@@ -24,8 +24,6 @@ public class User {
     }
 
     //Setters and Getters generated
-
-
     public String getName() {
         return name;
     }
