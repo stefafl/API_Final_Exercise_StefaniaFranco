@@ -4,6 +4,7 @@ import base.BaseApi;
 import base.model.User;
 import base.services.SubscriptionService;
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -18,6 +19,7 @@ import java.util.Map;
 import static net.serenitybdd.rest.SerenityRest.restAssuredThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class SubscriptionSteps {
 
@@ -53,9 +55,19 @@ public class SubscriptionSteps {
         try {
             Assert.assertFalse(subscriptionService.verifyDuplicateEmails());
         }catch (AssertionError e){
-            Reporter.log("There is duplicate emails", true);
+            Reporter.log("There are duplicate emails", true);
             e.printStackTrace();
         }
+    }
+
+    @Then("I update accountNumber to {string}")
+    public void iUpdateAccountNumber(String AccountNumber){
+        assertThat(subscriptionService.updateUser(AccountNumber).equals("200"));
+    }
+
+    @And("I verify accountNumber {string}")
+    public void iVerifyAccountNumber(String accountNumber){
+        assertTrue("AccountNumber doesn't exist",subscriptionService.verifyAccountNumber(accountNumber));
     }
 
     @Given("I get the response from the endpoint file with key {string}")

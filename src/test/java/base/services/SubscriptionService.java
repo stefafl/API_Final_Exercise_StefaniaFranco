@@ -34,6 +34,7 @@ public class SubscriptionService {
      * Local variables
      */
     private Response response;
+    private User user;
 
 
     /**
@@ -66,6 +67,11 @@ public class SubscriptionService {
                 " -- Session ID: " + response.getSessionId());
     }
 
+    /**
+     * This method is used to send a GET request based on an endpoint
+     *
+     * @param endpoint (String)
+     */
     @Step("I get the endpoint {string}")
     public void sendGetRequest(String endpoint) {
         response = SerenityRest.given()
@@ -178,22 +184,21 @@ public class SubscriptionService {
     }
 
     /**
-     * This method updates a User by Id using body information
+     * This method updates a user account number using body information
      *
-     * @param body
-     * @param id
+     * @param accountNumber
      * @return Response Object - Response code
      */
-    @Step("I UPDATE User by id using information")
-    public Response updateUserById(Object body, int id) {
+    @Step("I UPDATE accountNumber using information")
+    public Response updateUser(String accountNumber) {
+        this.user.setAccountNumber(accountNumber);
+
         response = SerenityRest.given()
                 .contentType(CONTENT_TYPE)
                 .header(CONTENT_TYPE, SUBSCRIPTION_CONTENT_TYPE)
-                .body(body)
-                .put(new BaseApi().getEndpointByKey("my_endpoint") + "/" + id);
+                .body(this.user)
+                .put("https://6294d1b0a7203b3ed071df5c.mockapi.io/api/bank_transaction/users/" + user.getId());
 
-        LOGGER.info("Send UPDATE Query --- Time: " + response.getTime() + " -- Status code: " + response.getStatusCode() +
-                " -- Session ID: " + response.getSessionId());
 
         return response;
     }
@@ -207,6 +212,26 @@ public class SubscriptionService {
         if(!users.isEmpty()){
             deleteAllUsers(users.size());
         }
+    }
+
+    /**
+     * This method is used to verify if an account number exists
+     *
+     * @param accountNumber (String)
+     */
+    @Step("I verify accountNumber")
+    public boolean verifyAccountNumber(String accountNumber){
+        List<User> users = getUserListFromService();
+        List<String> accountNumbers = new ArrayList<>();
+
+        for(User user : users){
+            accountNumbers.add(user.getAccountNumber());
+            if(accountNumbers.contains(accountNumber)){
+                this.user = user;
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

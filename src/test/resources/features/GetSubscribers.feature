@@ -20,10 +20,16 @@ Feature: API final exercise
     |Ana|Henao|9667        |3856   |uno            |anita6@exam.com|false|Francia|1638|
     Then I get the response code equals to 201
 
-  Scenario: Test3 - get and verify email users
+  Scenario: Test3 - Get and verify email users
     Given I get the response from the endpoint
     When I get the response code equals to 200
     Then I verify duplicate emails
+
+  Scenario: Test4 - Update an existing AccountNumber
+    Given I get the response from the endpoint
+    When I get the response code equals to 200
+    And I verify accountNumber "5667"
+    Then I update accountNumber to "1366"
 
     # DELETE Request based on a key and using JSON resource
   Scenario: Delete the last user created
