@@ -8,6 +8,7 @@ import net.thucydides.core.annotations.Step;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -206,6 +207,23 @@ public class SubscriptionService {
         if(!users.isEmpty()){
             deleteAllUsers(users.size());
         }
+    }
+
+    /**
+     * This method is used to verify if there is duplicate emails accounts
+     */
+    @Step("I verify duplicate emails")
+    public boolean verifyDuplicateEmails(){
+        List<User> users = getUserListFromService();
+        List<String> emails = new ArrayList<>();
+
+        for(User user : users){
+            if(emails.contains(user.getEmail())){
+                return true;
+            }
+            emails.add(user.getEmail());
+        }
+        return false;
     }
 
     /**

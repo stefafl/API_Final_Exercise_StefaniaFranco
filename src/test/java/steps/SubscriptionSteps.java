@@ -35,7 +35,7 @@ public class SubscriptionSteps {
     }
 
 
-    @When("I make sure the endpoint is empty")
+    @Then("I make sure the endpoint is empty")
     public void iMakeSureEndpointIsEmpty(){
 
         subscriptionService.verifyEmptyEndpoint();
@@ -46,6 +46,16 @@ public class SubscriptionSteps {
             assertEquals(subscriptionService.getUserListFromService().size(),0,"Endpoint is not empty");
         }
 
+    }
+
+    @Then("I verify duplicate emails")
+    public void iVerifyDuplicateEmails(){
+        try {
+            Assert.assertFalse(subscriptionService.verifyDuplicateEmails());
+        }catch (AssertionError e){
+            Reporter.log("There is duplicate emails", true);
+            e.printStackTrace();
+        }
     }
 
     @Given("I get the response from the endpoint file with key {string}")
@@ -86,6 +96,7 @@ public class SubscriptionSteps {
                 Assert.assertFalse(emails.contains(columns.get("email")));
             }catch (AssertionError e){
                 Reporter.log("Duplicate email: " + columns.get("email"), true);
+                e.printStackTrace();
                 continue;
             }
 
